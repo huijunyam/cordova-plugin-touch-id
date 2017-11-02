@@ -23,19 +23,17 @@ NSString *keychainItemServiceName;
 
     if ([laContext canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
       Boolean isFaceId = NO;
-              if (@available(iOS 11.0, *)) {
-                  if (laContext.biometryType == LABiometryTypeFaceID) {
-                      isFaceId = YES;
-                  } else {
-                      isFaceId = NO;
-                  }
-                  [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:isFaceId]
-                                              callbackId:command.callbackId];
-              } else {
-                  // Fallback on earlier versions
-                  [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK]
-                                              callbackId:command.callbackId];
-              }
+      if (@available(iOS 11.0, *)) {
+        if (laContext.biometryType == LABiometryTypeFaceID) {
+          isFaceId = YES;
+        } else {
+          isFaceId = NO;
+        }
+      } else {
+        isFaceId = NO;
+      }
+      [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:isFaceId]
+                                        callbackId:command.callbackId];
     } else {
       NSArray *errorKeys = @[@"code", @"localizedDescription"];
       [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:[error dictionaryWithValuesForKeys:errorKeys]]
